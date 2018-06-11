@@ -73,10 +73,25 @@ do_start() {
   fi
 }
 
+
+while getopts ":i:" opt; do
+  case $opt in
+    i)
+        iface=$OPTARG>&2
+        MAC=$(cat /sys/class/net/${iface}/address)
+        ;;
+    :)
+        echo "Option -$OPTARG requires an argument." >&2
+        exit 1
+        ;;
+  esac
+done
+
+
 do_configure
 do_compile
 do_install
-do_setup_interfaces $1
+do_setup_interfaces ${iface}
 do_start
 
 echo "Done"
